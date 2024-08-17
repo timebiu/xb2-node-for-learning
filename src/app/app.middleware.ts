@@ -31,6 +31,14 @@ export const defaultErrorHandler = (
      * 处理异常
      */
     switch (error.message){
+        case '用户名不能为空':
+            statusCode = 400;
+            message = '用户名不能为空';
+            break;
+        case '密码不能为空':
+            statusCode = 400;
+            message = '密码不能为空';
+            break;
         default:
             statusCode = 500;
             message = '服务暂时出了点问题 ~';
