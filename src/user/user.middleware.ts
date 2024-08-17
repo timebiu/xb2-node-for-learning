@@ -18,6 +18,10 @@ export const validateUserData = async (
     if (!name) return next(new Error('用户名不能为空'));
     if (!password) return next(new Error('密码不能为空'));
 
+    // 验证用户名
+    const user = await UserService.getUserByName(name);
+    if (user) return next(new Error('用户名已存在'));
+
     // 下一步
     next();
 }
