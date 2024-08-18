@@ -43,6 +43,14 @@ export const defaultErrorHandler = (
             statusCode = 409;
             message = '用户名已存在';
             break;
+        case '用户不存在':
+            statusCode = 400;
+            message = '用户不存在';
+            break;
+        case '密码错误':
+            statusCode = 400;
+            message = '密码错误';
+            break;
         default:
             statusCode = 500;
             message = '服务暂时出了点问题 ~';
