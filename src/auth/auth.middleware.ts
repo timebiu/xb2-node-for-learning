@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import * as UserService from '../user/user.service';
 import bcrypt from 'bcrypt';
 import { PUBLIC_KEY } from '../app/app.config';
+import { TokenPayload } from './auth.interface';
 
 /**
  * 验证用户登陆数据
@@ -74,7 +75,10 @@ export const authGuard = (
         if (!token) throw new Error();
 
         // 验证 JWT 令牌
-        jwt.verify(token, PUBLIC_KEY, { algorithms: ['RS256'] });
+        const decoded = jwt.verify(token, PUBLIC_KEY, { algorithms: ['RS256'] });
+
+        // 在请求主体中添加用户信息
+        request.user = decoded as TokenPayload;
 
         // 下一步
         next();
