@@ -51,6 +51,10 @@ export const defaultErrorHandler = (
             statusCode = 400;
             message = '密码错误';
             break;
+        case '无效的令牌':
+            statusCode = 401;
+            message = '无效的令牌';
+            break;
         default:
             statusCode = 500;
             message = '服务暂时出了点问题 ~';

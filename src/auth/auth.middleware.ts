@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
 import * as UserService from '../user/user.service';
 import bcrypt from 'bcrypt';
+import { PUBLIC_KEY } from '../app/app.config';
 
 /**
  * 验证用户登陆数据
@@ -50,4 +52,33 @@ export const hashPassword = async (
 
     // 下一步
     next();
+}
+
+/**
+ * 验证用户身份
+ */
+export const authGuard = (
+    request: Request,
+    response: Response,
+    next: NextFunction
+) => {
+    console.log("验证用户身份");
+
+    try{
+        // 提取 Authorization 头部
+        const authorization = request.header('Authorization');
+        if (!authorization) throw new Error();
+
+        // 提取 JWT 令牌
+        const token = authorization.replace('Bearer ', '');
+        if (!token) throw new Error();
+
+        // 验证 JWT 令牌
+        jwt.verify(token, PUBLIC_KEY, { algorithms: ['RS256'] });
+
+        // 下一步
+        next();
+    }catch(error){
+        next(new Error('无效的令牌'));
+    }
 }
