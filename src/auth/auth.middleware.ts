@@ -27,6 +27,9 @@ export const validateLoginrData = async (
     const matched = await bcrypt.compare(password, user.password);
     if (!matched) return next(new Error('密码错误'));
 
+    // 在请求主体中添加用户信息
+    requesr.body.user = user;
+
     // 下一步
     next();
 }

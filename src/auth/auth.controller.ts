@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { signToken } from './auth.service';
 
 /**
  * 用户登录
@@ -9,8 +10,19 @@ export const login = async (
   next: NextFunction
 ) => {
     // 准备数据
-    const { name, password } = request.body;
+    const { 
+      user: {id, name},
+    } = request.body;
+
+    const payload = { id, name };
+
+    try {
+    // 生成token
+    const token = signToken({ payload });
 
     // 做出响应
-    response.send({ message: `欢迎回来， ${name}`});
-}
+    response.send({ id, name, token });
+    } catch (error) {
+      next(error);
+    }
+};
