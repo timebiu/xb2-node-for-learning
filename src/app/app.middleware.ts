@@ -55,6 +55,10 @@ export const defaultErrorHandler = (
             statusCode = 401;
             message = '无效的令牌';
             break;
+        case '无权访问资源':
+            statusCode = 403;
+            message = '无权访问资源';
+            break;
         default:
             statusCode = 500;
             message = '服务暂时出了点问题 ~';

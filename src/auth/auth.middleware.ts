@@ -4,6 +4,8 @@ import * as UserService from '../user/user.service';
 import bcrypt from 'bcrypt';
 import { PUBLIC_KEY } from '../app/app.config';
 import { TokenPayload } from './auth.interface';
+import { request } from 'http';
+import { possess } from './auth.service';
 
 /**
  * 验证用户登陆数据
@@ -84,5 +86,48 @@ export const authGuard = (
         next();
     }catch(error){
         next(new Error('无效的令牌'));
+    }
+}
+
+/**
+ * 访问控制
+ */
+interface AccessControlOptions {
+    possession?: boolean;
+}
+
+export const accessControl = (options: AccessControlOptions) => {
+    return async (request: Request, response: Response, next: NextFunction) => {
+        console.log("访问控制");
+
+        // 结构选项
+        const { possession } = options;
+
+        // 当前用户id
+        const { id: userId } = request.user;
+
+        // 放行管理员
+        if (userId === 1) return next();
+
+        // 准备资源
+        const resourceIdParam = Object.keys(request.params)[0];
+        const resourceType = resourceIdParam.replace('Id', '');
+        const resourceId = parseInt(request.params[resourceIdParam], 10);
+
+        // 验证权限
+        if (possession) {
+            try{
+                const ownResource = await possess({userId, resourceType, resourceId});
+
+                if (!ownResource) {
+                    return next(new Error('无权访问资源'));
+                }
+            }catch(error){
+                return next(error);
+            }
+        }
+
+        // 下一步
+        next();
     }
 }
