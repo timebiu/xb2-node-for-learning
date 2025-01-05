@@ -1,3 +1,4 @@
+import { addListener } from 'process';
 import { connection } from '../app/database/mysql';
 import { FileModel } from './file.model';
 
@@ -18,4 +19,22 @@ export const createFile = async (
 
     // 提供数据
     return data;
+};
+
+/**
+ * 按 ID 查找文件
+ */
+export const findFileById = async (
+  fileid: number
+) => {
+  // 准备查询
+  const statement = `
+    SELECT * FROM file
+    WHERE id = ?
+    `;
+  // 执行查询
+  const [data] = await connection.promise().query(statement, fileid);
+
+  // 提供数据
+  return data[0];
 };

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import _ from 'lodash';
-import {createFile} from './file.service';
+import {createFile, findFileById} from './file.service';
 
 /**
 * 上传文件
@@ -35,4 +35,31 @@ try {
 }catch(error){
     next(error);
 }
+};
+
+/**
+* 文件服务
+*/
+export const serve = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  // 从地址参数中得到文件ID
+  const { fileId } = request.params;
+
+  try {
+    // 查找文件信息
+    const file = await findFileById(parseInt(fileId, 10));
+
+    // 做出响应
+    response.sendFile(file.filename, {
+        root: 'uploads',
+        headers: {
+            'Content-Type': file.mimetype,
+        },
+    });
+  }catch(error) {
+    next(error);
+  }
 };
