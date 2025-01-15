@@ -28,7 +28,8 @@ try {
     const data = await createFile({
         ...fileInfo,
         userId,
-        postId: Number(postId)
+        postId: Number(postId),
+        ...request.fileMetaData
     })
     // 做出响应
     response.status(201).send(data);
