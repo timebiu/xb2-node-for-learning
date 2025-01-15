@@ -30,7 +30,7 @@ next: NextFunction
   try {
     image = await Jimp.read(path);
   } catch (error) {
-    return next(error);
+    next(error);
   }
 
   // 准备数据
